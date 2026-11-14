@@ -1,0 +1,14 @@
+flowchart TD
+    A[Pengguna masuk ke menu Target Tahunan di aplikasi] --> B[Menetapkan minimal 1 target lengkap dengan indikator angka keberhasilan]
+    B --> C[Sistem memecah 1 target tahunan menjadi 12 target bulanan]
+    C --> D[Pengguna mengisi kembali target bulanan secara manual]
+    D --> E{Apakah target bulanan sudah terisi lengkap tanpa kosong?}
+    E -- Belum --> D
+    E -- Sudah --> F[Sistem memecah target bulanan menjadi target mingguan]
+    F --> G[Pengguna mengisi target mingguan secara manual]
+    G --> H[Pengguna menulis aktivitas harian]
+    H --> I{Ingin checklist tugas hari kemarin yang terlambat?}
+    I -- Ya --> J{Sudah melalui evaluasi mingguan dan status dipindah ke minggu depan?}
+    J -- Belum --> K[Tidak dapat checklist tugas hari kemarin]
+    J -- Sudah --> L[Dapat checklist tugas hari kemarin]
+    I -- Tidak --> H
