@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Monitoring Target dan Aktivitas - Reading Tracker 2026</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fdf8f6',
+              100: '#f2e8e5',
+              200: '#eaddd7',
+              300: '#e0cec7',
+              400: '#d2bab0',
+              500: '#9e7362',
+              600: '#845746',
+              700: '#6d4233',
+              800: '#5a3528',
+              900: '#482a20',
+            },
+            amberAccent: '#d97706',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Checkbox & Card Transition */
+    .task-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .task-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .completed-item {
+      background-color: #f8fafc;
+      opacity: 0.85;
+    }
+    .completed-item .title-text {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ================= TOP NAVIGATION / HEADER ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3.5">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-stone-800 to-amber-900 flex items-center justify-center text-white shadow-md shadow-amber-950/10">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900">Website Monitoring Target dan Aktivitas</h1>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                Tahun 2026
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">Personal Reading Challenge & Activity Journal</p>
+          </div>
+        </div>
+
+        <!-- Global Quick Stat Summary -->
+        <div class="hidden md:flex items-center gap-4">
+          <div class="text-right">
+            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Total Target 2026</p>
+            <p class="text-sm font-bold text-slate-800 flex items-center justify-end gap-1.5">
+              <span id="global-completed-books">0</span> / 12 Buku Selesai
+            </p>
+          </div>
+          <div class="w-24 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+            <div id="global-progress-bar" class="bg-amber-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+    <!-- CONTROL PANEL CARD (Sesuai Desain Figma: Filter Jenis Target & Secondary Filters) -->
+    <section class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm transition-shadow hover:shadow-md">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        
+        <!-- Primary Filter: Pilih Jenis Target -->
+        <div class="flex flex-wrap items-center gap-3">
+          <label for="select-target-type" class="text-sm sm:text-base font-semibold text-slate-700 whitespace-nowrap flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+            </svg>
+            Pilih jenis target :
+          </label>
+          
+          <div class="relative min-w-[200px]">
+            <select id="select-target-type" class="w-full bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-800 text-sm font-medium rounded-xl px-3.5 py-2.5 pr-8 focus:ring-2 focus:ring-slate-900 focus:outline-none transition appearance-none cursor-pointer">
+              <option value="" selected>-- Pilih Jenis Target --</option>
+              <option value="tahunan">Tahunan</option>
+              <option value="bulanan">Bulanan</option>
+              <option value="mingguan">Mingguan</option>
+              <option value="harian">Harian</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Filters (Muncul secara kondisional sesuai Figma Page 4 & Page 5) -->
+        <div id="secondary-filters" class="flex flex-wrap items-center gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+          
+          <!-- Filter Bulan (Untuk Mode Mingguan & Harian) -->
+          <div id="container-filter-bulan" class="hidden items-center gap-2">
+            <span class="text-xs font-medium text-slate-500 hidden sm:inline">Bulan:</span>
+            <div class="relative">
+              <select id="select-filter-bulan" class="bg-amber-50/70 border border-amber-200 text-amber-950 text-sm font-semibold rounded-xl px-3.5 py-2.5 pr-8 focus:ring-2 focus:ring-amber-500 focus:outline-none transition appearance-none cursor-pointer">
+                <!-- Diisi via JS (Januari - Desember) -->
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-amber-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Minggu (Khusus Mode Harian) -->
+          <div id="container-filter-minggu" class="hidden items-center gap-2">
+            <span class="text-xs font-medium text-slate-500 hidden sm:inline">Minggu:</span>
+            <div class="relative">
+              <select id="select-filter-minggu" class="bg-amber-50/70 border border-amber-200 text-amber-950 text-sm font-semibold rounded-xl px-3.5 py-2.5 pr-8 focus:ring-2 focus:ring-amber-500 focus:outline-none transition appearance-none cursor-pointer">
+                <option value="1">Minggu 1</option>
+                <option value="2">Minggu 2</option>
+                <option value="3">Minggu 3</option>
+                <option value="4">Minggu 4</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-amber-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset / Refresh Data Progress -->
+          <button id="btn-reset-data" title="Reset Semua Progres Checklist" class="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-slate-100 transition" onclick="resetProgress()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= DYNAMIC CONTENT DISPLAY AREA ================= -->
+    <div id="view-container" class="space-y-6">
+
+      <!-- 1. VIEW BERANDA / EMPTY STATE (Page 1 di Figma) -->
+      <section id="view-home" class="block">
+        <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 sm:p-14 text-center">
+          <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-2xl mx-auto flex items-center justify-center mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-2">Selamat Datang di Monitoring Target</h2>
+          <p class="text-slate-500 max-w-md mx-auto text-sm sm:text-base mb-6">
+            Silakan pilih jenis target pada kontrol di atas (Tahunan, Bulanan, Mingguan, atau Harian) untuk langsung melihat rincian aktivitas.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <button onclick="quickSelect('tahunan')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">🎯 Target Tahunan</button>
+            <button onclick="quickSelect('bulanan')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">📅 Target Bulanan</button>
+            <button onclick="quickSelect('mingguan')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">📖 Target Mingguan</button>
+            <button onclick="quickSelect('harian')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">✅ Target Harian</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. VIEW TARGET TAHUNAN (Page 2 di Figma) -->
+      <section id="view-tahunan" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
+            Target tahun 2026 :
+          </h2>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">Periode 1 Tahun</span>
+        </div>
+
+        <!-- Big Card Target Tahunan -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-amber-100/60 to-transparent rounded-bl-full pointer-events-none"></div>
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div class="space-y-3">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200">
+                <span>📚 Target Utama 2026</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-serif">
+                Membaca dan menyelesaikan buku fiksi sebanyak 12 buah
+              </h3>
+              <p class="text-slate-600 text-sm max-w-2xl leading-relaxed">
+                Tantangan literasi 2026: Menyelesaikan minimal 1 buku fiksi terpilih setiap bulan untuk membangun kebiasaan membaca rutin dan konsisten sepanjang tahun.
+              </p>
+            </div>
+
+            <!-- Ringkasan Progres Buku Selesai -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-5 min-w-[220px] flex flex-col justify-center items-center text-center">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status Pencapaian</span>
+              <div class="text-3xl font-black text-slate-900 my-1">
+                <span id="tahunan-stat-completed">0</span> <span class="text-lg font-normal text-slate-400">/ 12</span>
+              </div>
+              <p id="tahunan-stat-percent" class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                0% Tercapai
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Shortcut -->
+          <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+              <span>Target terdistribusi ke dalam 12 bulan (Januari - Desember)</span>
+            </div>
+            <button onclick="quickSelect('bulanan')" class="inline-flex items-center gap-2 text-sm font-semibold text-amber-800 hover:text-amber-950 hover:underline">
+              Lihat Rincian Target Bulanan
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. VIEW TARGET BULANAN (Page 3 di Figma) -->
+      <section id="view-bulanan" class="hidden space-y-5">
+        <!-- Subheader / Parent Target Reference (Sesuai Figma: "Target tahunan : Membaca Total 12 buku fiksi") -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 text-amber-950">
+          <div class="flex items-center gap-2.5">
+            <span class="p-1.5 bg-amber-200/60 rounded-lg text-amber-900">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </span>
+            <span class="text-sm font-medium">
+              Target tahunan : <strong class="font-bold text-amber-900">Membaca dan menyelesaikan buku fiksi sebanyak 12 buah</strong>
+            </span>
+          </div>
+          <div class="text-xs font-semibold px-2.5 py-1 bg-white rounded-md border border-amber-200 text-amber-900">
+            12 Bulan (Jan - Des)
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
+            Daftar Target Bulanan :
+          </h2>
+          <span class="text-xs text-slate-500">Klik kartu atau gunakan centang untuk menandai</span>
+        </div>
+
+        <!-- List Cards Bulanan (Januari - Desember) -->
+        <div id="list-bulanan" class="space-y-3">
+          <!-- Di-render oleh JavaScript -->
+        </div>
+      </section>
+
+      <!-- 4. VIEW TARGET MINGGUAN (Page 4 di Figma) -->
+      <section id="view-mingguan" class="hidden space-y-5">
+        <!-- Subheader / Context Title (Sesuai Figma: "Target Bulan [Bulan] : Selesaikan membaca buku [Judul]") -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 text-amber-950">
+          <div class="flex items-center gap-2.5">
+            <span class="p-1.5 bg-amber-200/60 rounded-lg text-amber-900">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </span>
+            <span class="text-sm font-medium" id="mingguan-context-title">
+              Target Bulan : <strong>Memuat data...</strong>
+            </span>
+          </div>
+          <div id="mingguan-month-badge" class="text-xs font-semibold px-2.5 py-1 bg-white rounded-md border border-amber-200 text-amber-900">
+            4 Minggu Target
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
+            Rincian Target Mingguan (4 Minggu) :
+          </h2>
+          <span class="text-xs text-slate-500">Target konsisten 1 bab per minggu</span>
+        </div>
+
+        <!-- List Cards Mingguan (Minggu 1 - 4) -->
+        <div id="list-mingguan" class="space-y-3">
+          <!-- Di-render oleh JavaScript -->
+        </div>
+      </section>
+
+      <!-- 5. VIEW TARGET HARIAN (Page 5 di Figma) -->
+      <section id="view-harian" class="hidden space-y-5">
+        <!-- Subheader / Context Title (Sesuai Figma: "Target Minggu [N] : Selesaikan Bab [N]") -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 text-amber-950">
+          <div class="flex items-center gap-2.5">
+            <span class="p-1.5 bg-amber-200/60 rounded-lg text-amber-900">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </span>
+            <span class="text-sm font-medium" id="harian-context-title">
+              Target Minggu : <strong>Memuat data...</strong>
+            </span>
+          </div>
+          <div id="harian-week-badge" class="text-xs font-semibold px-2.5 py-1 bg-white rounded-md border border-amber-200 text-amber-900">
+            7 Hari (Senin - Minggu)
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
+            Rincian Target Aktivitas Harian :
+          </h2>
+          <span class="text-xs text-slate-500">Target membaca: 10 halaman / hari</span>
+        </div>
+
+        <!-- List Cards Harian (Hari 1 s.d. Hari 7) -->
+        <div id="list-harian" class="space-y-3">
+          <!-- Di-render oleh JavaScript -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Aplikasi Monitoring Target & Aktivitas • Sanbercode Gen AI Project</span>
+      </div>
+      <div>
+        <span>Desain diadaptasi dari Figma ke Static Web Responsif (Tailwind CSS & Vanilla JS)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // ============================================================================
+    // MODUL INTI SISTEM MONITORING TARGET (Transpilasi dari monitoring_target.py)
+    // Struktur Hierarkis: Tahunan -> Bulanan -> Mingguan -> Harian
+    // Mengimplementasikan seluruh aturan dan validasi yang sama persis
+    // ============================================================================
+
+    /**
+     * Exception yang dilemparkan ketika validasi data target gagal.
+     */
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ValidationError";
+      }
+    }
+
+    /**
+     * Fungsi pembuat UUID v4 unik untuk setiap entitas target.
+     */
+    function generateUUID() {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    /**
+     * Model data untuk target/aktivitas harian.
+     */
+    class DailyTarget {
+      constructor(weekly_target_id, hari_ke, id = null, aktivitas = null) {
+        this.weekly_target_id = weekly_target_id;
+        this.hari_ke = hari_ke;
+        this.id = id || generateUUID();
+        this.aktivitas = aktivitas;
+      }
+    }
+
+    /**
+     * Model data untuk target mingguan.
+     */
+    class WeeklyTarget {
+      constructor(monthly_target_id, minggu_ke, id = null, nilai_target = null) {
+        this.monthly_target_id = monthly_target_id;
+        this.minggu_ke = minggu_ke;
+        this.id = id || generateUUID();
+        this.nilai_target = nilai_target;
+      }
+    }
+
+    /**
+     * Model data untuk target bulanan.
+     */
+    class MonthlyTarget {
+      constructor(yearly_target_id, bulan_ke, id = null, nilai_target = null) {
+        this.yearly_target_id = yearly_target_id;
+        this.bulan_ke = bulan_ke;
+        this.id = id || generateUUID();
+        this.nilai_target = nilai_target;
+      }
+    }
+
+    /**
+     * Model data untuk target tahunan.
+     */
+    class YearlyTarget {
+      constructor(judul, indikator_angka, satuan = "", id = null) {
+        this.judul = judul;
+        this.indikator_angka = indikator_angka;
+        this.satuan = satuan;
+        this.id = id || generateUUID();
+      }
+    }
+
+    /**
+     * Manajer pengelola siklus hidup target tahunan, bulanan, mingguan, dan harian.
+     */
+    class TargetManager {
+      constructor() {
+        this._yearly_targets = {};
+        this._monthly_targets = {};
+        this._weekly_targets = {};
+        this._daily_targets = {};
+      }
+
+      /**
+       * Menambahkan target tahunan baru dan secara otomatis membentuk hierarki
+       * (12 bulan, 4 minggu/bulan, 7 hari/minggu).
+       */
+      tambah_target_tahunan(judul, indikator_angka, satuan = "") {
+        if (!judul || typeof judul !== "string" || !judul.trim()) {
+          throw new ValidationError("Judul target tahunan tidak boleh kosong.");
+        }
+
+        if (typeof indikator_angka === "boolean" || typeof indikator_angka !== "number" || isNaN(indikator_angka)) {
+          throw new ValidationError("Indikator angka harus berupa nilai numerik.");
+        }
+
+        if (indikator_angka <= 0) {
+          throw new ValidationError("Indikator angka harus berupa nilai numerik lebih besar dari 0.");
+        }
+
+        const yearly_target = new YearlyTarget(
+          judul.trim(),
+          indikator_angka,
+          satuan ? satuan.trim() : ""
+        );
+        this._yearly_targets[yearly_target.id] = yearly_target;
+
+        // 1. Bentuk hierarki 12 target bulanan
+        const monthly_list = [];
+        for (let bulan_ke = 1; bulan_ke <= 12; bulan_ke++) {
+          const m_target = new MonthlyTarget(yearly_target.id, bulan_ke);
+          monthly_list.push(m_target);
+
+          // 2. Bentuk hierarki 4 target mingguan per bulan
+          const weekly_list = [];
+          for (let minggu_ke = 1; minggu_ke <= 4; minggu_ke++) {
+            const w_target = new WeeklyTarget(m_target.id, minggu_ke);
+            weekly_list.push(w_target);
+
+            // 3. Bentuk hierarki 7 target/aktivitas harian per minggu
+            const daily_list = [];
+            for (let hari_ke = 1; hari_ke <= 7; hari_ke++) {
+              const d_target = new DailyTarget(w_target.id, hari_ke);
+              daily_list.push(d_target);
+            }
+            this._daily_targets[w_target.id] = daily_list;
+          }
+
+          this._weekly_targets[m_target.id] = weekly_list;
+        }
+
+        this._monthly_targets[yearly_target.id] = monthly_list;
+
+        return yearly_target;
+      }
+
+      /**
+       * Mengambil seluruh daftar target tahunan yang tersimpan.
+       */
+      ambil_semua_target_tahunan() {
+        return Object.values(this._yearly_targets);
+      }
+
+      /**
+       * Mengambil daftar 12 target bulanan berdasarkan ID target tahunan.
+       */
+      ambil_target_bulanan(yearly_target_id) {
+        if (!(yearly_target_id in this._yearly_targets)) {
+          throw new ValidationError(`Target tahunan dengan id '${yearly_target_id}' tidak ditemukan.`);
+        }
+        return this._monthly_targets[yearly_target_id] || [];
+      }
+
+      /**
+       * Mengambil daftar 4 target mingguan berdasarkan ID target bulanan.
+       */
+      ambil_target_mingguan(monthly_target_id) {
+        if (!(monthly_target_id in this._weekly_targets)) {
+          throw new ValidationError(`Target bulanan dengan id '${monthly_target_id}' tidak ditemukan.`);
+        }
+        return this._weekly_targets[monthly_target_id] || [];
+      }
+
+      /**
+       * Mengambil daftar 7 target/aktivitas harian berdasarkan ID target mingguan.
+       */
+      ambil_target_harian(weekly_target_id) {
+        if (!(weekly_target_id in this._daily_targets)) {
+          throw new ValidationError(`Target mingguan dengan id '${weekly_target_id}' tidak ditemukan.`);
+        }
+        return this._daily_targets[weekly_target_id] || [];
+      }
+
+      /**
+       * Mengisi nilai target 12 bulan secara manual oleh pengguna.
+       * Menolak penyimpanan jika belum terisi lengkap untuk seluruh 12 bulan.
+       */
+      isi_target_bulanan_manual(yearly_target_id, nilai_bulanan) {
+        if (!(yearly_target_id in this._yearly_targets)) {
+          throw new ValidationError(`Target tahunan dengan id '${yearly_target_id}' tidak ditemukan.`);
+        }
+
+        if (typeof nilai_bulanan !== "object" || nilai_bulanan === null || Array.isArray(nilai_bulanan)) {
+          throw new ValidationError("Data nilai bulanan harus berupa dictionary {bulan: nilai}.");
+        }
+
+        // Validasi kelengkapan 12 bulan (1..12)
+        const keys = Object.keys(nilai_bulanan).map(Number);
+        const bulan_dibutuhkan = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        const setKeys = new Set(keys);
+        const isLengkap = bulan_dibutuhkan.length === setKeys.size && bulan_dibutuhkan.every(b => setKeys.has(b));
+        if (!isLengkap) {
+          throw new ValidationError("Target bulanan harus terisi lengkap untuk seluruh 12 bulan.");
+        }
+
+        for (const [bulan, nilai] of Object.entries(nilai_bulanan)) {
+          if (typeof nilai === "boolean" || typeof nilai !== "number" || isNaN(nilai)) {
+            throw new ValidationError(`Nilai target untuk bulan ${bulan} harus berupa nilai numerik.`);
+          }
+          if (nilai < 0) {
+            throw new ValidationError(`Nilai target untuk bulan ${bulan} tidak boleh bernilai negatif.`);
+          }
+        }
+
+        for (const m_target of this._monthly_targets[yearly_target_id]) {
+          m_target.nilai_target = nilai_bulanan[m_target.bulan_ke];
+        }
+      }
+
+      /**
+       * Mengisi nilai target 4 minggu secara manual oleh pengguna.
+       */
+      isi_target_mingguan_manual(monthly_target_id, nilai_mingguan) {
+        if (!(monthly_target_id in this._weekly_targets)) {
+          throw new ValidationError(`Target bulanan dengan id '${monthly_target_id}' tidak ditemukan.`);
+        }
+
+        if (typeof nilai_mingguan !== "object" || nilai_mingguan === null || Array.isArray(nilai_mingguan)) {
+          throw new ValidationError("Data nilai mingguan harus berupa dictionary {minggu: nilai}.");
+        }
+
+        const keys = Object.keys(nilai_mingguan).map(Number);
+        const minggu_dibutuhkan = [1, 2, 3, 4];
+        const setKeys = new Set(keys);
+        const isLengkap = minggu_dibutuhkan.length === setKeys.size && minggu_dibutuhkan.every(m => setKeys.has(m));
+        if (!isLengkap) {
+          throw new ValidationError("Target mingguan harus terisi lengkap untuk seluruh 4 minggu.");
+        }
+
+        for (const [minggu, nilai] of Object.entries(nilai_mingguan)) {
+          if (typeof nilai === "boolean" || typeof nilai !== "number" || isNaN(nilai)) {
+            throw new ValidationError(`Nilai target untuk minggu ${minggu} harus berupa nilai numerik.`);
+          }
+          if (nilai < 0) {
+            throw new ValidationError(`Nilai target untuk minggu ${minggu} tidak boleh bernilai negatif.`);
+          }
+        }
+
+        for (const w_target of this._weekly_targets[monthly_target_id]) {
+          w_target.nilai_target = nilai_mingguan[w_target.minggu_ke];
+        }
+      }
+
+      /**
+       * Mengisi catatan aktivitas harian untuk 7 hari secara manual oleh pengguna.
+       */
+      isi_target_harian_manual(weekly_target_id, aktivitas_harian) {
+        if (!(weekly_target_id in this._daily_targets)) {
+          throw new ValidationError(`Target mingguan dengan id '${weekly_target_id}' tidak ditemukan.`);
+        }
+
+        if (typeof aktivitas_harian !== "object" || aktivitas_harian === null || Array.isArray(aktivitas_harian)) {
+          throw new ValidationError("Data aktivitas harian harus berupa dictionary {hari: aktivitas}.");
+        }
+
+        const keys = Object.keys(aktivitas_harian).map(Number);
+        const hari_dibutuhkan = [1, 2, 3, 4, 5, 6, 7];
+        const setKeys = new Set(keys);
+        const isLengkap = hari_dibutuhkan.length === setKeys.size && hari_dibutuhkan.every(h => setKeys.has(h));
+        if (!isLengkap) {
+          throw new ValidationError("Aktivitas harian harus terisi lengkap untuk seluruh 7 hari.");
+        }
+
+        for (const [hari, aktivitas] of Object.entries(aktivitas_harian)) {
+          if (!aktivitas || typeof aktivitas !== "string" || !aktivitas.trim()) {
+            throw new ValidationError(`Aktivitas harian untuk hari ${hari} tidak boleh kosong.`);
+          }
+        }
+
+        for (const d_target of this._daily_targets[weekly_target_id]) {
+          d_target.aktivitas = aktivitas_harian[d_target.hari_ke].trim();
+        }
+      }
+    }
+
+    // --- INSTANSIASI & INTEGRASI TARGET MANAGER ---
+    const targetManager = new TargetManager();
+
+    // Memuat target tahunan 2026 ke dalam TargetManager
+    const yearlyTarget2026 = targetManager.tambah_target_tahunan(
+      "Membaca dan menyelesaikan buku fiksi sebanyak 12 buah",
+      12,
+      "buku"
+    );
+
+    // Mengisi target 12 bulan (1 buku per bulan)
+    const dataBulanan = {};
+    for (let b = 1; b <= 12; b++) {
+      dataBulanan[b] = 1;
+    }
+    targetManager.isi_target_bulanan_manual(yearlyTarget2026.id, dataBulanan);
+
+    // Mengisi target 4 minggu dan 7 hari untuk masing-masing bulan
+    const daftarBulan = targetManager.ambil_target_bulanan(yearlyTarget2026.id);
+    daftarBulan.forEach(mTarget => {
+      targetManager.isi_target_mingguan_manual(mTarget.id, { 1: 1, 2: 1, 3: 1, 4: 1 });
+      const daftarMinggu = targetManager.ambil_target_mingguan(mTarget.id);
+      daftarMinggu.forEach(wTarget => {
+        const aktHarian = {};
+        for (let h = 1; h <= 7; h++) {
+          aktHarian[h] = "Baca 10 halaman";
+        }
+        targetManager.isi_target_harian_manual(wTarget.id, aktHarian);
+      });
+    });
+
+    // Ekspos secara global untuk inspeksi di peramban
+    window.targetManager = targetManager;
+    window.TargetManager = TargetManager;
+    window.YearlyTarget = YearlyTarget;
+    window.MonthlyTarget = MonthlyTarget;
+    window.WeeklyTarget = WeeklyTarget;
+    window.DailyTarget = DailyTarget;
+    window.ValidationError = ValidationError;
+
+    // --- 1. DATA DUMMY SESUAI SPESIFIKASI TAMPILAN BUKU ---
+    const BOOKS_DATA = [
+      { id: 'jan', month: 'Januari', title: 'Your Name', author: 'Makoto Shinkai' },
+      { id: 'feb', month: 'Februari', title: 'Memory of Glass', author: 'Akiyoshi Rikako' },
+      { id: 'mar', month: 'Maret', title: 'A Place Called Perfect', author: 'Helena Duggan' },
+      { id: 'apr', month: 'April', title: 'Sherlock Holmes 1', author: 'Sir Arthur Conan Doyle' },
+      { id: 'mei', month: 'Mei', title: 'Bumi Manusia (Buku Pilihan Bebas)', author: 'Pramoedya Ananta Toer' },
+      { id: 'jun', month: 'Juni', title: 'Second Sister', author: 'Chan Ho Kei' },
+      { id: 'jul', month: 'Juli', title: 'Real Face', author: 'Chinen Mikito' },
+      { id: 'agu', month: 'Agustus', title: 'Harry Potter 1', author: 'J.K. Rowling' },
+      { id: 'sep', month: 'September', title: 'Ther Melian', author: 'Shienny M.S.' },
+      { id: 'okt', month: 'Oktober', title: 'Laut Bercerita', author: 'Leila S. Chudori' },
+      { id: 'nov', month: 'November', title: 'Holy Mother', author: 'Akiyoshi Rikako' },
+      { id: 'des', month: 'Desember', title: 'Penance', author: 'Minato Kanae' }
+    ];
+
+    const DAYS_DATA = [
+      { dayIndex: 1, name: 'Senin', targetPages: 10 },
+      { dayIndex: 2, name: 'Selasa', targetPages: 10 },
+      { dayIndex: 3, name: 'Rabu', targetPages: 10 },
+      { dayIndex: 4, name: 'Kamis', targetPages: 10 },
+      { dayIndex: 5, name: 'Jumat', targetPages: 10 },
+      { dayIndex: 6, name: 'Sabtu', targetPages: 10 },
+      { dayIndex: 7, name: 'Minggu', targetPages: 10 },
+    ];
+
+    // --- 2. LOCAL STORAGE MANAGEMENT UNTUK CHECKLIST ---
+    const STORAGE_KEY = 'monitoring_reading_tracker_2026';
+    let progressState = loadProgress();
+
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progressState));
+      } catch (e) {
+        console.error('Failed to save to localStorage', e);
+      }
+      updateGlobalStats();
+    }
+
+    function isItemChecked(key) {
+      return !!progressState[key];
+    }
+
+    function setItemChecked(key, checked) {
+      if (checked) {
+        progressState[key] = true;
+      } else {
+        delete progressState[key];
+      }
+      saveProgress();
+    }
+
+    function resetProgress() {
+      if (confirm('Apakah kamu yakin ingin mereset seluruh progres checklist yang tersimpan?')) {
+        progressState = {};
+        localStorage.removeItem(STORAGE_KEY);
+        renderCurrentView();
+        updateGlobalStats();
+      }
+    }
+
+    // --- 3. DOM ELEMENTS ---
+    const selectTargetType = document.getElementById('select-target-type');
+    const containerFilterBulan = document.getElementById('container-filter-bulan');
+    const selectFilterBulan = document.getElementById('select-filter-bulan');
+    const containerFilterMinggu = document.getElementById('container-filter-minggu');
+    const selectFilterMinggu = document.getElementById('select-filter-minggu');
+
+    const viewHome = document.getElementById('view-home');
+    const viewTahunan = document.getElementById('view-tahunan');
+    const viewBulanan = document.getElementById('view-bulanan');
+    const viewMingguan = document.getElementById('view-mingguan');
+    const viewHarian = document.getElementById('view-harian');
+
+    const listBulanan = document.getElementById('list-bulanan');
+    const listMingguan = document.getElementById('list-mingguan');
+    const listHarian = document.getElementById('list-harian');
+
+    // --- 4. INISIALISASI OPTIONS DROPDOWN ---
+    function initDropdowns() {
+      // Isi dropdown Bulan
+      selectFilterBulan.innerHTML = '';
+      BOOKS_DATA.forEach((b, index) => {
+        const opt = document.createElement('option');
+        opt.value = b.id;
+        opt.textContent = `${b.month} (${b.title.split(' ')[0]}...)`;
+        if (index === 0) opt.selected = true;
+        selectFilterBulan.appendChild(opt);
+      });
+    }
+
+    // --- 5. TAMPILKAN VIEW SESUAI STATE ---
+    function renderCurrentView() {
+      const type = selectTargetType.value;
+
+      // Sembunyikan semua section
+      viewHome.classList.add('hidden');
+      viewTahunan.classList.add('hidden');
+      viewBulanan.classList.add('hidden');
+      viewMingguan.classList.add('hidden');
+      viewHarian.classList.add('hidden');
+
+      // Pengaturan visibility secondary filter
+      if (type === 'mingguan') {
+        containerFilterBulan.classList.remove('hidden');
+        containerFilterBulan.classList.add('flex');
+        containerFilterMinggu.classList.add('hidden');
+        containerFilterMinggu.classList.remove('flex');
+      } else if (type === 'harian') {
+        containerFilterBulan.classList.remove('hidden');
+        containerFilterBulan.classList.add('flex');
+        containerFilterMinggu.classList.remove('hidden');
+        containerFilterMinggu.classList.add('flex');
+      } else {
+        containerFilterBulan.classList.add('hidden');
+        containerFilterBulan.classList.remove('flex');
+        containerFilterMinggu.classList.add('hidden');
+        containerFilterMinggu.classList.remove('flex');
+      }
+
+      // Tampilkan view yang dipilih
+      if (!type) {
+        viewHome.classList.remove('hidden');
+      } else if (type === 'tahunan') {
+        viewTahunan.classList.remove('hidden');
+        renderTahunan();
+      } else if (type === 'bulanan') {
+        viewBulanan.classList.remove('hidden');
+        renderBulanan();
+      } else if (type === 'mingguan') {
+        viewMingguan.classList.remove('hidden');
+        renderMingguan();
+      } else if (type === 'harian') {
+        viewHarian.classList.remove('hidden');
+        renderHarian();
+      }
+
+      updateGlobalStats();
+    }
+
+    // --- 6. RENDER KONTEN SPESIFIK ---
+
+    // A. View Tahunan
+    function renderTahunan() {
+      let completedCount = 0;
+      BOOKS_DATA.forEach(b => {
+        if (isItemChecked(`book_${b.id}`)) completedCount++;
+      });
+      const pct = Math.round((completedCount / BOOKS_DATA.length) * 100);
+
+      document.getElementById('tahunan-stat-completed').textContent = completedCount;
+      document.getElementById('tahunan-stat-percent').textContent = `${pct}% Tercapai`;
+    }
+
+    // B. View Bulanan (Januari - Desember)
+    function renderBulanan() {
+      listBulanan.innerHTML = '';
+
+      BOOKS_DATA.forEach((item, idx) => {
+        const itemKey = `book_${item.id}`;
+        const isDone = isItemChecked(itemKey);
+
+        const card = document.createElement('div');
+        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
+        
+        card.innerHTML = `
+          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <!-- Custom Checkbox -->
+            <label class="relative flex items-center justify-center cursor-pointer p-1">
+              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheck('${itemKey}', this.checked)" class="sr-only peer">
+              <div class="w-6 h-6 rounded-lg border-2 border-slate-300 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 flex items-center justify-center transition-all bg-white shadow-xs">
+                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </label>
+
+            <!-- Card Content (Format Sesuai Figma: [Bulan] : Selesaikan membaca buku [Judul] - [Penulis]) -->
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                  ${item.month}
+                </span>
+                <span class="title-text text-sm sm:text-base font-semibold text-slate-900 truncate">
+                  Selesaikan membaca buku <em>${item.title}</em>
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                <span>Penulis: <strong>${item.author}</strong></span>
+                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                <span>Target: 1 Buku Penuh (4 Minggu)</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button: Lompat ke Target Mingguan Bulan ini -->
+          <button onclick="jumpToMonth('${item.id}')" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 transition">
+            <span>Rincian Minggu</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        `;
+        listBulanan.appendChild(card);
+      });
+    }
+
+    // C. View Mingguan (Minggu 1 - 4 untuk Bulan Terpilih)
+    function renderMingguan() {
+      const selectedMonthId = selectFilterBulan.value || 'jan';
+      const currentBook = BOOKS_DATA.find(b => b.id === selectedMonthId) || BOOKS_DATA[0];
+
+      // Update Context Title (Sesuai Figma Page 4)
+      document.getElementById('mingguan-context-title').innerHTML = `
+        Target Bulan <strong>${currentBook.month}</strong> : Selesaikan membaca buku <strong>${currentBook.title} - ${currentBook.author}</strong>
+      `;
+      document.getElementById('mingguan-month-badge').textContent = `Target: ${currentBook.month}`;
+
+      listMingguan.innerHTML = '';
+
+      for (let week = 1; week <= 4; week++) {
+        const itemKey = `week_${selectedMonthId}_w${week}`;
+        const isDone = isItemChecked(itemKey);
+
+        const card = document.createElement('div');
+        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <!-- Custom Checkbox -->
+            <label class="relative flex items-center justify-center cursor-pointer p-1">
+              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheck('${itemKey}', this.checked)" class="sr-only peer">
+              <div class="w-6 h-6 rounded-lg border-2 border-slate-300 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 flex items-center justify-center transition-all bg-white shadow-xs">
+                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </label>
+
+            <!-- Card Content (Format Sesuai Figma: Minggu [N] : Selesaikan Bab [N]) -->
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                  Minggu ${week}
+                </span>
+                <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
+                  Selesaikan Bab ${week}
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                <span>Estimasi: 70 Halaman (10 hal/hari)</span>
+                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                <span>Fokus: Pemahaman alur cerita Bab ${week}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button: Lompat ke Target Harian Minggu ini -->
+          <button onclick="jumpToWeek('${selectedMonthId}', ${week})" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 px-3 py-2 rounded-lg border border-amber-200 transition">
+            <span>Rincian Harian</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        `;
+        listMingguan.appendChild(card);
+      }
+    }
+
+    // D. View Harian (Hari 1 s.d. Hari 7 untuk Bulan dan Minggu Terpilih)
+    function renderHarian() {
+      const selectedMonthId = selectFilterBulan.value || 'jan';
+      const selectedWeek = selectFilterMinggu.value || '1';
+      const currentBook = BOOKS_DATA.find(b => b.id === selectedMonthId) || BOOKS_DATA[0];
+
+      // Update Context Title (Sesuai Figma Page 5)
+      document.getElementById('harian-context-title').innerHTML = `
+        Target Minggu ${selectedWeek} : Selesaikan Bab ${selectedWeek} (${currentBook.title})
+      `;
+      document.getElementById('harian-week-badge').textContent = `${currentBook.month} • Minggu ${selectedWeek}`;
+
+      listHarian.innerHTML = '';
+
+      DAYS_DATA.forEach(day => {
+        const itemKey = `day_${selectedMonthId}_w${selectedWeek}_d${day.dayIndex}`;
+        const isDone = isItemChecked(itemKey);
+
+        const card = document.createElement('div');
+        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <!-- Custom Checkbox -->
+            <label class="relative flex items-center justify-center cursor-pointer p-1">
+              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheck('${itemKey}', this.checked)" class="sr-only peer">
+              <div class="w-6 h-6 rounded-lg border-2 border-slate-300 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 flex items-center justify-center transition-all bg-white shadow-xs">
+                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </label>
+
+            <!-- Card Content (Format Sesuai Figma: Hari ke [N] - [Hari] : Baca [10] halaman) -->
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                  Hari ke ${day.dayIndex} - ${day.name}
+                </span>
+                <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
+                  Baca ${day.targetPages} halaman
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                <span>Bab ${selectedWeek}</span>
+                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+                <span class="text-emerald-700 font-medium">Target harian konsisten</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Status Pill -->
+          <div>
+            ${isDone 
+              ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                  Selesai
+                </span>` 
+              : `<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                  Pending
+                </span>`
+            }
+          </div>
+        `;
+        listHarian.appendChild(card);
+      });
+    }
+
+    // --- 7. EVENT HANDLERS & NAVIGATION SHORTCUTS ---
+    function toggleCheck(key, isChecked) {
+      setItemChecked(key, isChecked);
+      renderCurrentView();
+    }
+
+    function quickSelect(type) {
+      selectTargetType.value = type;
+      renderCurrentView();
+    }
+
+    function jumpToMonth(monthId) {
+      selectTargetType.value = 'mingguan';
+      selectFilterBulan.value = monthId;
+      renderCurrentView();
+    }
+
+    function jumpToWeek(monthId, weekNumber) {
+      selectTargetType.value = 'harian';
+      selectFilterBulan.value = monthId;
+      selectFilterMinggu.value = weekNumber.toString();
+      renderCurrentView();
+    }
+
+    // Update Global Progress Bar di Header
+    function updateGlobalStats() {
+      let completedBooks = 0;
+      BOOKS_DATA.forEach(b => {
+        if (isItemChecked(`book_${b.id}`)) completedBooks++;
+      });
+      const pct = Math.round((completedBooks / BOOKS_DATA.length) * 100);
+
+      const countEl = document.getElementById('global-completed-books');
+      const barEl = document.getElementById('global-progress-bar');
+      if (countEl) countEl.textContent = completedBooks;
+      if (barEl) barEl.style.width = `${pct}%`;
+    }
+
+    // Select Change Listeners
+    selectTargetType.addEventListener('change', () => {
+      renderCurrentView();
+    });
+
+    selectFilterBulan.addEventListener('change', () => {
+      if (selectTargetType.value === 'mingguan' || selectTargetType.value === 'harian') {
+        renderCurrentView();
+      }
+    });
+
+    selectFilterMinggu.addEventListener('change', () => {
+      if (selectTargetType.value === 'harian') {
+        renderCurrentView();
+      }
+    });
+
+    // Inisialisasi awal saat load
+    document.addEventListener('DOMContentLoaded', () => {
+      initDropdowns();
+      renderCurrentView();
+    });
+  </script>
+</body>
+</html>
