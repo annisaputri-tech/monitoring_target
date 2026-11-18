@@ -1007,20 +1007,13 @@
       document.getElementById('tahunan-stat-percent').textContent = `${pct}% Tercapai`;
     }
 
-    // B. View Bulanan (Januari - Desember)
-    function renderBulanan() {
-      listBulanan.innerHTML = '';
-
-      BOOKS_DATA.forEach((item, idx) => {
-        const itemKey = `book_${item.id}`;
-        const isDone = isItemChecked(itemKey);
-        const totalDaysMonth = hitung_total(idx + 1, null, 2026);
-        const totalWeeksMonth = Math.ceil(totalDaysMonth / 7);
-
-        const card = document.createElement('div');
-        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
-        
-        card.innerHTML = `
+    /**
+     * Helper komponen untuk menghasilkan markup kartu tugas (task-card).
+     * Digunakan secara seragam pada view Bulanan, Mingguan, dan Harian.
+     */
+    function createTaskCardHTML({ itemKey, isDone, badgeHtml, titleHtml, subtitleHtml, actionHtml = '' }) {
+      return `
+        <div class="task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}">
           <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
             <!-- Custom Checkbox -->
             <label class="relative flex items-center justify-center cursor-pointer p-1">
@@ -1032,31 +1025,63 @@
               </div>
             </label>
 
-            <!-- Card Content (Format Sesuai Figma: [Bulan] : Selesaikan membaca buku [Judul] - [Penulis]) -->
+            <!-- Card Content -->
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  ${item.month}
-                </span>
-                <span class="title-text text-sm sm:text-base font-semibold text-slate-900 truncate">
-                  Selesaikan membaca buku <em>${item.title}</em>
-                </span>
+                ${badgeHtml}
+                ${titleHtml}
               </div>
               <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
-                <span>Penulis: <strong>${item.author}</strong></span>
-                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Target: 1 Buku Penuh (${totalWeeksMonth} Minggu / ${totalDaysMonth} Hari)</span>
+                ${subtitleHtml}
               </p>
             </div>
           </div>
 
-          <!-- Action Button: Lompat ke Target Mingguan Bulan ini -->
+          ${actionHtml}
+        </div>
+      `;
+    }
+
+    // B. View Bulanan (Januari - Desember)
+    function renderBulanan() {
+      listBulanan.innerHTML = '';
+
+      BOOKS_DATA.forEach((item, idx) => {
+        const itemKey = `book_${item.id}`;
+        const isDone = isItemChecked(itemKey);
+        const totalDaysMonth = hitung_total(idx + 1, null, 2026);
+        const totalWeeksMonth = Math.ceil(totalDaysMonth / 7);
+
+        const badgeHtml = `
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+            ${item.month}
+          </span>
+        `;
+        const titleHtml = `
+          <span class="title-text text-sm sm:text-base font-semibold text-slate-900 truncate">
+            Selesaikan membaca buku <em>${item.title}</em>
+          </span>
+        `;
+        const subtitleHtml = `
+          <span>Penulis: <strong>${item.author}</strong></span>
+          <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+          <span>Target: 1 Buku Penuh (${totalWeeksMonth} Minggu / ${totalDaysMonth} Hari)</span>
+        `;
+        const actionHtml = `
           <button onclick="jumpToMonth('${item.id}')" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 transition">
             <span>Rincian Minggu</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
           </button>
         `;
-        listBulanan.appendChild(card);
+
+        listBulanan.insertAdjacentHTML('beforeend', createTaskCardHTML({
+          itemKey,
+          isDone,
+          badgeHtml,
+          titleHtml,
+          subtitleHtml,
+          actionHtml
+        }));
       });
     }
 
@@ -1087,46 +1112,36 @@
         const daysInThisWeek = (week === totalWeeks) ? (totalDays - (week - 1) * 7) : 7;
         const estPages = daysInThisWeek * 10;
 
-        const card = document.createElement('div');
-        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
-
-        card.innerHTML = `
-          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-            <!-- Custom Checkbox -->
-            <label class="relative flex items-center justify-center cursor-pointer p-1">
-              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheck('${itemKey}', this.checked)" class="sr-only peer">
-              <div class="w-6 h-6 rounded-lg border-2 border-slate-300 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 flex items-center justify-center transition-all bg-white shadow-xs">
-                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                </svg>
-              </div>
-            </label>
-
-            <!-- Card Content (Format Sesuai Figma: Minggu [N] : Selesaikan Bab [N]) -->
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                  Minggu ${week}
-                </span>
-                <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
-                  Selesaikan Bab ${week}
-                </span>
-              </div>
-              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
-                <span>Estimasi: ${estPages} Halaman (${daysInThisWeek} hari)</span>
-                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Fokus: Pemahaman alur cerita Bab ${week}</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Action Button: Lompat ke Target Harian Minggu ini -->
+        const badgeHtml = `
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            Minggu ${week}
+          </span>
+        `;
+        const titleHtml = `
+          <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
+            Selesaikan Bab ${week}
+          </span>
+        `;
+        const subtitleHtml = `
+          <span>Estimasi: ${estPages} Halaman (${daysInThisWeek} hari)</span>
+          <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+          <span>Fokus: Pemahaman alur cerita Bab ${week}</span>
+        `;
+        const actionHtml = `
           <button onclick="jumpToWeek('${selectedMonthId}', ${week})" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 px-3 py-2 rounded-lg border border-amber-200 transition">
             <span>Rincian Harian</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
           </button>
         `;
-        listMingguan.appendChild(card);
+
+        listMingguan.insertAdjacentHTML('beforeend', createTaskCardHTML({
+          itemKey,
+          isDone,
+          badgeHtml,
+          titleHtml,
+          subtitleHtml,
+          actionHtml
+        }));
       }
     }
 
@@ -1161,40 +1176,22 @@
         const itemKey = `day_${selectedMonthId}_w${weekNum}_d${day.dayIndex}`;
         const isDone = isItemChecked(itemKey);
 
-        const card = document.createElement('div');
-        card.className = `task-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4 transition-all ${isDone ? 'completed-item' : 'hover:border-slate-300'}`;
-
-        card.innerHTML = `
-          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-            <!-- Custom Checkbox -->
-            <label class="relative flex items-center justify-center cursor-pointer p-1">
-              <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCheck('${itemKey}', this.checked)" class="sr-only peer">
-              <div class="w-6 h-6 rounded-lg border-2 border-slate-300 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 flex items-center justify-center transition-all bg-white shadow-xs">
-                <svg class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                </svg>
-              </div>
-            </label>
-
-            <!-- Card Content (Format Sesuai Figma & Kalender Aktual: Hari ke [N] - [Hari] (Tgl [N]) : Baca 10 halaman) -->
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                  Hari ke ${day.dayIndex} - ${day.name} (Tgl ${day.dateNumber})
-                </span>
-                <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
-                  Baca ${day.targetPages} halaman
-                </span>
-              </div>
-              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
-                <span>Bab ${weekNum}</span>
-                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span class="text-emerald-700 font-medium">${day.dateFormatted}</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Status Pill -->
+        const badgeHtml = `
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            Hari ke ${day.dayIndex} - ${day.name} (Tgl ${day.dateNumber})
+          </span>
+        `;
+        const titleHtml = `
+          <span class="title-text text-sm sm:text-base font-semibold text-slate-900">
+            Baca ${day.targetPages} halaman
+          </span>
+        `;
+        const subtitleHtml = `
+          <span>Bab ${weekNum}</span>
+          <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+          <span class="text-emerald-700 font-medium">${day.dateFormatted}</span>
+        `;
+        const actionHtml = `
           <div>
             ${isDone 
               ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
@@ -1207,7 +1204,15 @@
             }
           </div>
         `;
-        listHarian.appendChild(card);
+
+        listHarian.insertAdjacentHTML('beforeend', createTaskCardHTML({
+          itemKey,
+          isDone,
+          badgeHtml,
+          titleHtml,
+          subtitleHtml,
+          actionHtml
+        }));
       });
     }
 
